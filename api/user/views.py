@@ -17,8 +17,8 @@ class UsersView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serialzer = serializers.UserSerializer(data=request.data)
+        serializer = serializers.UserSerializer(data=request.data)
         if serializer.is_valid():
-            serialzer.save()
-            return Reponse(serializer.data, status.HTTP_201_CREATED)
-        return Response()
+            serializer.save()
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.error, status.HTTP_400_BAD_REQUEST)

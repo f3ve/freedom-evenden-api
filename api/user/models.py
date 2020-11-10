@@ -22,7 +22,7 @@ class myUserManager(BaseUserManager):
         user.save(self._db)
         return user
 
-    def create_superuser(self, email, username, password):
+    def create_superuser(self, email, username, full_name, password):
         user = self.create_user(
             email=self.normalize_email(email), username=username, password=password
         )
@@ -42,7 +42,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
     full_name = models.CharField(max_length=60)
-    date_created = models.DateTimeField(verbose_name="created", auto_now_add=True)
+    date_joined = models.DateTimeField(verbose_name="created", auto_now_add=True)
     last_modified = models.DateTimeField(verbose_name="modified", auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
