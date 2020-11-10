@@ -10,15 +10,21 @@ class UsersView(APIView):
     List users, create a new user.
     """
 
-    def get(self, request, format=None):
+    def get(self, request):
+        """
+        returns all users from database
+        """
         users = User.objects.all()
         serializer = serializers.UserSerializer(users, many=True)
 
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request):
+        """
+        Creates a new user in database
+        """
         serializer = serializers.UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
-        return Response(serializer.error, status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
