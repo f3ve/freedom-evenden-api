@@ -3,6 +3,11 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class myUserManager(BaseUserManager):
+    """
+    customer user manager incase I need to alter the way users are created in
+    the future.
+    """
+
     def create_user(self, email, username, full_name, password=None):
         if not email:
             raise ValueError("Email is required")
@@ -29,6 +34,11 @@ class myUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    """
+    Custom user model, Django recommends creating a custom user model to make it
+    easier to alter it in the future.
+    """
+
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
     full_name = models.CharField(max_length=60)
