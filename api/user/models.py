@@ -1,14 +1,21 @@
+"""
+User Models
+"""
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
-class myUserManager(BaseUserManager):
+class MyUserManager(BaseUserManager):
     """
     customer user manager incase I need to alter the way users are created in
     the future.
     """
 
     def create_user(self, email, username, full_name, password=None):
+        """
+        creates a user
+        """
+
         if not email:
             raise ValueError("Email is required")
         if not username:
@@ -23,8 +30,12 @@ class myUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, username, full_name, password):
+        """
+        creates a superuser
+        """
         user = self.create_user(
-            email=self.normalize_email(email), username=username, password=password
+            email=self.normalize_email(email), username=username, password=password,
+            full_name=full_name
         )
         user.is_admin = True
         user.is_staff = True
@@ -54,7 +65,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = ("email",)
     REQUIRED_FIELDS = ["username, full_name"]
 
-    objects = myUserManager()
+    objects = MyUserManager()
 
     def __str__(self):
         return self.username
