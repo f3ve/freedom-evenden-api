@@ -62,8 +62,8 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
-    USERNAME_FIELD = ("email",)
-    REQUIRED_FIELDS = ["username, full_name"]
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "full_name"]
 
     objects = MyUserManager()
 
@@ -71,4 +71,7 @@ class User(AbstractBaseUser):
         return self.username
 
     def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, perm, obj=None):
         return True

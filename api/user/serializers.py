@@ -3,7 +3,7 @@ Serializers for user model
 """
 
 from rest_framework import serializers
-from api.user.models import User
+from api.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
