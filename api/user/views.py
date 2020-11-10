@@ -21,3 +21,4 @@ class UsersView(APIView):
         if serializer.is_valid():
             serialzer.save()
             return Reponse(serializer.data, status.HTTP_201_CREATED)
+        return Response()
