@@ -1,6 +1,6 @@
 # pylint: disable=unused-argument
 """
-User Models
+API Models
 """
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
