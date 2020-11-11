@@ -3,6 +3,7 @@ User Models
 """
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 
 
 class MyUserManager(BaseUserManager):
@@ -23,7 +24,8 @@ class MyUserManager(BaseUserManager):
         if not full_name:
             raise ValueError("Name is required")
 
-        user = self.model(email=self.normalize_email(email), username=username)
+        user = self.model(email=self.normalize_email(email),
+                          username=username, full_name=full_name)
 
         user.set_password(password)
         user.save(self._db)
@@ -44,7 +46,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model, Django recommends creating a custom user model to make it
     easier to alter it in the future.
@@ -75,12 +77,11 @@ class User(AbstractBaseUser):
         has_perm
         """
         print(perm)
-        return self.is_admin
+        return self.is_active
 
     def has_module_perms(self, perm):
         """
         has_module_perms
         """
-        if perm == "auth":
-            return self.is_superuser
-        return self.is_admin
+
+        return self.is_active
