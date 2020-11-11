@@ -32,3 +32,14 @@ class UsersView(APIView):
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+# class UserDetailView(APIView):
+#     """
+#     GET, PATCH, DELETE specific user by id
+#     """
+
+#     def get(self, request, pk):
+#         """
+#         get user by id
+#         """

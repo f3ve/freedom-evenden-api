@@ -1,4 +1,3 @@
-# pylint: disable=unused-argument
 """
 API Models
 """
@@ -77,5 +76,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         has_perm
         """
-        print(perm)
         return self.is_active
