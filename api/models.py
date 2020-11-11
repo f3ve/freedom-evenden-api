@@ -70,8 +70,17 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.username
 
-    def has_perm(self, perm, obj=None):
-        return True
+    def has_perm(self, perm):
+        """
+        has_perm
+        """
+        print(perm)
+        return self.is_admin
 
-    def has_module_perms(self, perm, obj=None):
-        return True
+    def has_module_perms(self, perm):
+        """
+        has_module_perms
+        """
+        if perm == "auth":
+            return self.is_superuser
+        return self.is_admin
