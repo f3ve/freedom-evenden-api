@@ -34,12 +34,31 @@ class UsersView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-# class UserDetailView(APIView):
-#     """
-#     GET, PATCH, DELETE specific user by id
-#     """
+class UserDetailView(APIView):
+    """
+    GET, PATCH, DELETE specific user by id
+    """
 
-#     def get(self, request, pk):
-#         """
-#         get user by id
-#         """
+    user = None
+    response = None
+
+    def get_object(self, pk):
+        """
+        attempts to fetch a user, if user does not exist returns 404
+        """
+        try:
+            self.user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            self.response = Response(
+                {"message": "User does not exist"}, status.HTTP_404_NOT_FOUND
+            )
+
+    def get(self, request, pk):
+        """
+        get user by id
+        """
+        self.get_object(pk)
+        if self.user is not None and self.response is None:
+            serializer = serializers.UserSerializer(self.user)
+            return Response(serializer.data)
+        return self.response
