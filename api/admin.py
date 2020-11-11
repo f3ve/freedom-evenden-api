@@ -2,20 +2,21 @@
 Admin site config
 """
 
+from django.forms import ModelForm
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserCreationForm
 from api.models import User
-from django.forms import ModelForm
 
 
 class ApiUserCreationForm(ModelForm):
+    """
+    custom user creation form that properly encrypts passwords
+    """
     class Meta:
         model = User
         fields = ('email',)
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password"])
         if commit:
@@ -24,9 +25,12 @@ class ApiUserCreationForm(ModelForm):
 
 
 class ApiUserAdmin(UserAdmin):
+    """
+    Defining fields that will be in the user detail page
+    """
     add_form = ApiUserCreationForm
-    list_display = ("email",)
-    ordering = ("email",)
+    list_display = ("username",)
+    ordering = ("username",)
 
     fieldsets = (
         (None, {'fields': ('email', 'password', 'full_name', 'username')}),
@@ -34,8 +38,11 @@ class ApiUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password', 'username', 'full_name', 'is_superuser', 'is_staff', 'is_active')}
-         ),
+            'fields': (
+                'email', 'password', 'username', 'full_name', 'is_superuser',
+                'is_staff', 'is_active'
+            )
+        }),
     )
 
 

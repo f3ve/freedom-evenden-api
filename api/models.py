@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 """
 User Models
 """
@@ -72,16 +73,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
-    def has_perm(self, perm):
+    def has_perm(self, perm, obj=None):
         """
         has_perm
         """
         print(perm)
-        return self.is_active
-
-    def has_module_perms(self, perm):
-        """
-        has_module_perms
-        """
-
         return self.is_active
