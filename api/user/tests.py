@@ -169,4 +169,5 @@ class UserDetailTestCase(APITestCase):
         response = self.client.patch(url, pk=user.id, data=updated_fields)
         res_json = response.json()
 
+        # TODO finish writing tests for this section
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
