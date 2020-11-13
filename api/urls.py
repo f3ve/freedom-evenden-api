@@ -7,5 +7,5 @@ from api.user.views import UsersView, UserDetailView
 
 urlpatterns = [
     path("users/", UsersView.as_view(), name="users"),
-    path("users/<pk>/", UserDetailView.as_view(), name="userDetail")
+    path("users/<pk>/", UserDetailView.as_view(), name="user")
 ]

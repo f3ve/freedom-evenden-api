@@ -110,3 +110,43 @@ class UserListTestCase(APITestCase):
         self.assertEqual(res_json[2]['full_name'], user3.full_name)
         self.assertNotIn('password', res_json[0] or res_json[1] or res_json[2])
         self.assertIn('id', res_json[0] and res_json[1] and res_json[2])
+
+
+class UserDetailTestCase(APITestCase):
+    """
+    Tests for UserDetialView
+    """
+
+    client = APIClient()
+
+    def test_get_user_by_id(self):
+        """
+        Should return 200 and requested user
+        """
+        user = User.objects.create_user(
+            email="test@test.com", username="testuser", full_name="test user", password="aaAA11!!"
+        )
+        url = reverse("user", args=[user.id])
+        response = self.client.get(url, pk=user.id)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(res_json['email'], user.email)
+        self.assertEqual(res_json['username'], user.username)
+        self.assertEqual(res_json['full_name'], user.full_name)
+        self.assertNotIn('password', res_json)
+        self.assertIn('id', res_json)
+        self.assertIsNotNone(res_json['id'])
+        self.assertIsInstance(res_json['id'], int)
+
+    def test_get_nonexisting_user(self):
+        """
+        Should return 404 if user does not exist 
+        """
+
+        url = reverse("user", args=[1])
+        response = self.client.get(url, pk=1)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res_json['message'], 'User does not exist')
