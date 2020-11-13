@@ -5,28 +5,13 @@ User tests
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from api.models import User
+from api import test_helpers
 
 
 class UserListTestCase(APITestCase):
     """
     Test users POST and GET
     """
-
-    testUser1 = {
-        "username": "testcase1",
-        "email": "tes1t@email.com",
-        "full_name": "test user",
-        "password": "aaAA11!!"
-    }
-
-    invalidUser1 = {
-        "username": "",
-        "email": "",
-        "full_name": "",
-        "password": ""
-    }
-
     users_url = reverse("users")
     client = APIClient()
 
@@ -34,7 +19,7 @@ class UserListTestCase(APITestCase):
         """
         test user is created properly
         """
-        user = self.testUser1
+        user = test_helpers.test_user1
         url = self.users_url
         response = self.client.post(url, user)
         json_res = response.json()
@@ -52,7 +37,7 @@ class UserListTestCase(APITestCase):
         """
         test that view handles invalid POST properly
         """
-        user = self.invalidUser1
+        user = test_helpers.missing_fields_user
         url = self.users_url
         response = self.client.post(url, user)
         res_json = response.json()
@@ -78,19 +63,9 @@ class UserListTestCase(APITestCase):
         test GET returns list of users when users in DB
         """
         url = self.users_url
-
-        user1 = User.objects.create_user(
-            email="test3@test.com", username="test3", password="aaAA11!!", full_name="test user"
-        )
-
-        user2 = User.objects.create_user(
-            email="test2@test.com", username="test2", password="aaAA11!!", full_name="test user"
-        )
-
-        user3 = User.objects.create_user(
-            email="test4@test.com", username="test4", password="aaAA11!!", full_name="test user"
-        )
-
+        user1 = test_helpers.create_test_user(1)
+        user2 = test_helpers.create_test_user(2)
+        user3 = test_helpers.create_test_user(3)
         response = self.client.get(url)
         res_json = response.json()
 
@@ -123,9 +98,7 @@ class UserDetailTestCase(APITestCase):
         """
         Should return 200 and requested user
         """
-        user = User.objects.create_user(
-            email="test@test.com", username="testuser", full_name="test user", password="aaAA11!!"
-        )
+        user = test_helpers.create_test_user(1)
         url = reverse("user", args=[user.id])
         response = self.client.get(url, pk=user.id)
         res_json = response.json()
@@ -141,7 +114,7 @@ class UserDetailTestCase(APITestCase):
 
     def test_get_nonexisting_user(self):
         """
-        Should return 404 if user does not exist 
+        Should return 404 if user does not exist
         """
 
         url = reverse("user", args=[1])
@@ -150,3 +123,50 @@ class UserDetailTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(res_json['message'], 'User does not exist')
+
+    def test_delete_user(self):
+        """
+        Should return 204 and delete requested user
+        """
+
+        user = test_helpers.create_test_user(1)
+        url = reverse("user", args=[user.id])
+        del_res = self.client.delete(url, pk=user.id)
+        get_res = self.client.get(url, pk=user.id)
+        res_json = get_res.json()
+
+        # Check delete response
+        self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Test that user has actually been deleted
+        self.assertEqual(get_res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res_json["message"], 'User does not exist')
+
+    def test_delete_nonexisting_user(self):
+        """
+        Should return 404 and error message
+        """
+        url = reverse("user", args=[1])
+        response = self.client.delete(url, pk=1)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res_json["message"], 'User does not exist')
+
+    def test_patch_user(self):
+        """
+        Should return 203 and update the specified user
+        """
+
+        user = test_helpers.create_test_user(0)
+        url = reverse("user", args=[user.id])
+        updated_fields = {
+            "username": "newUserName",
+            "email": "newemail@new.com",
+            "full_name": "new name",
+            "password": "newPassword11!!"
+        }
+        response = self.client.patch(url, pk=user.id, data=updated_fields)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)

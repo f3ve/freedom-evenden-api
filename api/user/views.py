@@ -39,17 +39,16 @@ class UserDetailView(APIView):
     GET, PATCH, DELETE specific user by id
     """
 
-    user = None
-    response = None
-
-    def get_object(self, pk):
+    def get_object(self, pk, call_back):
         """
-        attempts to fetch a user, if user does not exist returns 404
+        attempts to fetch user then calls the provided callback function, if
+        user does not exist returns 404 with error message
         """
         try:
-            self.user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=pk)
+            return call_back(user)
         except User.DoesNotExist:
-            self.response = Response(
+            return Response(
                 {"message": "User does not exist"}, status.HTTP_404_NOT_FOUND
             )
 
@@ -57,8 +56,32 @@ class UserDetailView(APIView):
         """
         get user by id
         """
-        self.get_object(pk)
-        if self.user is not None and self.response is None:
-            serializer = serializers.UserSerializer(self.user)
+
+        def return_user(user):
+            serializer = serializers.UserSerializer(user)
             return Response(serializer.data)
-        return self.response
+
+        return self.get_object(pk, return_user)
+
+    def patch(self, request, pk):
+        """
+        PATCH fields in specified user
+        """
+
+        def update_user(user):
+            serializer = serializers.UserSerializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        return self.get_object(pk, update_user)
+
+    def delete(self, request, pk):
+        """
+        deletes specified user
+        """
+        def delete_user(user):
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return self.get_object(pk, delete_user)
