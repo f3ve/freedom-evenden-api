@@ -69,7 +69,8 @@ class UserDetailView(APIView):
         """
 
         def update_user(user):
-            serializer = serializers.UserSerializer(user, data=request.data)
+            serializer = serializers.UserSerializer(
+                user, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status.HTTP_202_ACCEPTED)

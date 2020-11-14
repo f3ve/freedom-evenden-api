@@ -163,7 +163,6 @@ class UserDetailTestCase(APITestCase):
         updated_fields = {
             "username": "newUserName",
             "email": "newemail@new.com",
-            "full_name": "new name",
             "password": "newPassword11!!"
         }
         response = self.client.patch(url, pk=user.id, data=updated_fields)
@@ -172,7 +171,7 @@ class UserDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(res_json["username"], updated_fields["username"])
         self.assertEqual(res_json["email"], updated_fields["email"])
-        self.assertEqual(res_json["full_name"], updated_fields["full_name"])
+        self.assertEqual(res_json["full_name"], user.full_name)
         self.assertEqual(res_json["id"], user.id)
         self.assertNotIn("password", res_json)
         self.assertNotEqual(res_json["username"], user.username)

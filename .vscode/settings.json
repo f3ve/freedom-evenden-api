@@ -1,9 +1,0 @@
-{
-  "python.pythonPath": "/home/f3ve/.pyenv/versions/freedom-evenden/bin/python",
-  "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
-  "python.linting.lintOnSave": true,
-  "python.linting.pylintArgs": [
-    "--rcfile=~/projects/freedom-evenden/api/.pylintrc"
-  ],
-}
