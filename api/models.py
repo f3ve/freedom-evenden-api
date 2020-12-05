@@ -110,12 +110,12 @@ class Category(models.Model):
 
 class Article(models.Model):
     """
-    Artile model for blog posts
+    Article model for blog posts
     """
     title = models.CharField(max_length=100, default='New Post')
     content = models.TextField(blank=True, null=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='articles'
+        User, on_delete=models.CASCADE, related_name='articles', default='1'
     )
     category = models.ForeignKey(
         Category, blank=True, null=True, on_delete=models.CASCADE

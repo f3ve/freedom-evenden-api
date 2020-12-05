@@ -65,3 +65,10 @@ test_user3 = {
     "full_name": "test user",
     "password": "aaAA11!!"
 }
+
+test_article1 = {
+    "title": "Test Article 1",
+    "content": "This is a test article yaya!",
+    "slug": "test_article_1_slug",
+    "draft": False,
+}
