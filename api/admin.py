@@ -5,7 +5,7 @@ Admin site config
 from django.forms import ModelForm
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from api.models import User
+from api.models import User, Article, Category
 
 
 class ApiUserCreationForm(ModelForm):
@@ -47,3 +47,5 @@ class ApiUserAdmin(UserAdmin):
 
 
 admin.site.register(User, ApiUserAdmin)
+admin.site.register(Category)
+admin.site.register(Article)
