@@ -1,7 +1,7 @@
 """
 Article Tests
 """
-
+import datetime
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
@@ -24,5 +24,12 @@ class ArticleListTestCase(APITestCase):
         article = test_helpers.test_article1
         response = self.client.post(self.url, article)
         res_json = response.json()
+        if response.status_code is not status.HTTP_201_CREATED:
+            print(res_json)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(int(res_json['author']), user.id)
+        self.assertEqual(res_json['publish_date'],
+                         str(article['publish_date']))
+        self.assertIn('id', res_json)
+        self.assertIsInstance(res_json['id'], int)

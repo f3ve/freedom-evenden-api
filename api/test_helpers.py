@@ -2,6 +2,7 @@
 functions and tools to keep tests DRY
 """
 
+import datetime
 from api.models import User
 
 
@@ -71,4 +72,5 @@ test_article1 = {
     "content": "This is a test article yaya!",
     "slug": "test_article_1_slug",
     "draft": False,
+    "publish_date": datetime.date.today()
 }
