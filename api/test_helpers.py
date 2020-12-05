@@ -3,7 +3,7 @@ functions and tools to keep tests DRY
 """
 
 import datetime
-from api.models import User
+from api.models import User, Article
 
 
 def create_test_user(n):
@@ -14,6 +14,22 @@ def create_test_user(n):
     return User.objects.create_user(
         email="test@test%s.com" % n, username="testuser%s" % n,
         full_name="test user %s" % n, password="aaAA11!!"
+    )
+
+
+def create_test_article(n, user):
+    """
+    Creates a test article in the database
+    """
+    today = datetime.date.today()
+
+    return Article.objects.create(
+        title="test article %s" % n,
+        content="test article %s content" % n,
+        author=user,
+        slug="test_article_%s" % n,
+        draft=False,
+        publish_date=today
     )
 
 
@@ -67,10 +83,17 @@ test_user3 = {
     "password": "aaAA11!!"
 }
 
-test_article1 = {
-    "title": "Test Article 1",
-    "content": "This is a test article yaya!",
-    "slug": "test_article_1_slug",
-    "draft": False,
-    "publish_date": datetime.date.today()
-}
+
+def test_article1(user_id):
+    """
+    Creates a dictionary that represents a test article
+    """
+
+    return {
+        "title": "Test Article 1",
+        "content": "This is a test article yaya!",
+        "slug": "test_article_1_slug",
+        "draft": False,
+        "publish_date": datetime.date.today(),
+        "author": int(user_id)
+    }

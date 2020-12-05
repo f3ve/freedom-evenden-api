@@ -23,3 +23,6 @@ class ArticlesView(APIView):
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)
