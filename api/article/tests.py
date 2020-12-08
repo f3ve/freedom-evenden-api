@@ -87,7 +87,7 @@ class ArticleDetailTest(APITestCase):
         self.assertEqual(res_json['content'], article.content)
         self.assertEqual(res_json['id'], article.id)
 
-    def test_delete_user(self):
+    def test_delete_article(self):
         """
         Should return 204 and delete the request user
         """
@@ -102,3 +102,22 @@ class ArticleDetailTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(get_res.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(res_json['message'], 'Article does not exist')
+
+    def test_patch_article(self):
+        """
+        Should return 203 and update specified user
+        """
+
+        user = test_helpers.create_test_user(2)
+        article = test_helpers.create_test_article(2, user, False)
+        url = reverse("article", args=[article.id])
+        update_fields = {
+            "title": "new title yay!"
+        }
+        response = self.client.patch(url, pk=user.id, data=update_fields)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(res_json["title"], update_fields["title"])
+        self.assertNotEqual(res_json["title"], article.title)
+        self.assertEqual(res_json["content"], article.content)
