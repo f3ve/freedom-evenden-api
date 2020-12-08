@@ -140,17 +140,3 @@ class Article(models.Model):
         for i in range(len(breadcrumb)-1):
             breadcrumb[i] = '/'.join(breadcrumb[-1:i-1:-1])
         return breadcrumb[-1:0:-1]
-
-    def asdict(self):
-        """
-        Converts Article object to a dict
-        """
-        return {
-            "title": self.title,
-            "content": self.content,
-            "author": self.author,
-            "category": self.category,
-            "slug": self.slug,
-            "draft": self.draft,
-            "publish_date": self.publish_date
-        }

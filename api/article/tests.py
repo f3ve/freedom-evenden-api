@@ -62,3 +62,9 @@ class ArticleListTestCase(APITestCase):
         self.assertNotEqual(data[1], serializer1)
         self.assertNotEqual(serializer3, data[0] or data[1])
         self.assertNotEqual(article3.id, data[0]['id'] or data[1]['id'])
+
+
+class ArticleDetailTest(APITestCase):
+    """
+    Tests GET by id, PATCH, DELETE and delete
+    """
