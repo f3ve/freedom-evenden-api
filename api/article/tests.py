@@ -1,7 +1,6 @@
 """
 Article Tests
 """
-import datetime
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
@@ -21,7 +20,6 @@ class ArticleListTestCase(APITestCase):
         """
 
         user = test_helpers.create_test_user(0)
-        print('POST TEST user ID:', user.id)
         article = test_helpers.test_article1(user.id)
         response = self.client.post(self.url, article)
         res_json = response.json()
@@ -41,13 +39,26 @@ class ArticleListTestCase(APITestCase):
         """
 
         user = test_helpers.create_test_user(1)
-        print('GET TEST user ID:', user.id)
-        article1 = test_helpers.create_test_article(1, user)
-        article2 = test_helpers.create_test_article(2, user)
-        article3 = test_helpers.create_test_article(3, user)
+        article1 = test_helpers.create_test_article(1, user, False)
+        article2 = test_helpers.create_test_article(2, user, False)
+        article3 = test_helpers.create_test_article(3, user, True)
+        serializer1 = test_helpers.serializerArticle(article1).data
+        serializer2 = test_helpers.serializerArticle(article2).data
+        serializer3 = test_helpers.serializerArticle(article3).data
 
         response = self.client.get(self.url)
+        data = response.json()
         if response.status_code is not status.HTTP_200_OK:
-            print(response.json())
+            print(data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['title'], article1.title)
+        self.assertEqual(data[1]['title'], article2.title)
+        self.assertEqual(data[0], serializer1)
+        self.assertEqual(data[1], serializer2)
+        self.assertNotEqual(data[0], serializer2)
+        self.assertNotEqual(data[1], serializer1)
+        self.assertNotEqual(serializer3, data[0] or data[1])
+        self.assertNotEqual(article3.id, data[0]['id'] or data[1]['id'])

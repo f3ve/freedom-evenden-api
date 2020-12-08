@@ -25,4 +25,9 @@ class ArticlesView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        return Response(status=status.HTTP_200_OK)
+        """
+        returns a list of articles
+        """
+        articles = Article.objects.filter(draft=False)
+        serializer = serializers.ArticleSerializer(articles, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)

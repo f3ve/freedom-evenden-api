@@ -4,6 +4,7 @@ functions and tools to keep tests DRY
 
 import datetime
 from api.models import User, Article
+from api.article import serializers as articleSerializers
 
 
 def create_test_user(n):
@@ -17,7 +18,7 @@ def create_test_user(n):
     )
 
 
-def create_test_article(n, user):
+def create_test_article(n, user, draft):
     """
     Creates a test article in the database
     """
@@ -28,9 +29,16 @@ def create_test_article(n, user):
         content="test article %s content" % n,
         author=user,
         slug="test_article_%s" % n,
-        draft=False,
+        draft=draft,
         publish_date=today
     )
+
+
+def serializerArticle(article):
+    """
+    serializes a article
+    """
+    return articleSerializers.ArticleSerializer(article)
 
 
 # Test User dicts for different test cases
