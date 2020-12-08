@@ -78,8 +78,27 @@ class ArticleDetailTest(APITestCase):
 
         user = test_helpers.create_test_user(0)
         article = test_helpers.create_test_article(0, user, False)
-        url = reverse("article", args=[1])
-        response = self.client.get(url, pk=user.id)
+        url = reverse("article", args=[article.id])
+        response = self.client.get(url, pk=article.id)
         res_json = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(res_json['title'], article.title)
+        self.assertEqual(res_json['content'], article.content)
+        self.assertEqual(res_json['id'], article.id)
+
+    def test_delete_user(self):
+        """
+        Should return 204 and delete the request user
+        """
+
+        user = test_helpers.create_test_user(1)
+        article = test_helpers.create_test_article(1, user, False)
+        url = reverse("article", args=[article.id])
+        response = self.client.delete(url, pk=article.id)
+        get_res = self.client.get(url, pk=article.id)
+        res_json = get_res.json()
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(get_res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(res_json['message'], 'Article does not exist')
