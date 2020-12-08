@@ -68,3 +68,18 @@ class ArticleDetailTest(APITestCase):
     """
     Tests GET by id, PATCH, DELETE and delete
     """
+
+    client = APIClient()
+
+    def test_get_article_by_id(self):
+        """
+        Should return 200 and requested user
+        """
+
+        user = test_helpers.create_test_user(0)
+        article = test_helpers.create_test_article(0, user, False)
+        url = reverse("article", args=[1])
+        response = self.client.get(url, pk=user.id)
+        res_json = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
