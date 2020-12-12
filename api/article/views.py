@@ -1,7 +1,7 @@
 """
 Article Views
 """
-
+import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,9 +26,11 @@ class ArticlesView(APIView):
 
     def get(self, request):
         """
-        returns a list of articles
+        returns a list of published articles ordered from most recent to oldest
         """
-        articles = Article.objects.filter(draft=False)
+        today = datetime.date.today()
+        articles = Article.objects.filter(
+            draft=False, publish_date__lte=today).order_by('-publish_date')
         serializer = serializers.ArticleSerializer(articles, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 

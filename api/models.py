@@ -123,6 +123,7 @@ class Article(models.Model):
     slug = models.SlugField(unique=True)
     draft = models.BooleanField(default=True)
     publish_date = models.DateField(auto_now=False, auto_now_add=False)
+    summary = models.CharField(max_length=280)
 
     def __str__(self):
         return self.title
