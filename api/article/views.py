@@ -46,7 +46,7 @@ class ArticleDetailView(APIView):
         """
 
         try:
-            article = Article.objects.get(pk=pk)
+            article = Article.objects.get(slug=pk)
             return call_back(article)
         except Article.DoesNotExist:
             return Response({"message": "Article does not exist"}, status.HTTP_404_NOT_FOUND)
