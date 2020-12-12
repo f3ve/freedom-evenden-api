@@ -7,12 +7,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.article import serializers
 from api.models import Article
+from api.pagination import PaginationHandlerMixin, ArticlePaginator
 
 
-class ArticlesView(APIView):
+class ArticlesView(APIView, PaginationHandlerMixin):
     """
     POST, GET users
     """
+
+    pagination_class = ArticlePaginator
 
     def post(self, request):
         """
@@ -31,8 +34,15 @@ class ArticlesView(APIView):
         today = datetime.date.today()
         articles = Article.objects.filter(
             draft=False, publish_date__lte=today).order_by('-publish_date')
-        serializer = serializers.ArticleSerializer(articles, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        page = self.paginate_queryset(articles)
+        print(page)
+        if page is not None:
+            serializer = serializers.ArticleSerializer(page, many=True)
+            paginated_response = self.get_paginated_response(serializer.data)
+            return Response(paginated_response.data)
+        else:
+            serializer = serializers.ArticleSerializer(articles, many=True)
+        return Response(serializer.data)
 
 
 class ArticleDetailView(APIView):

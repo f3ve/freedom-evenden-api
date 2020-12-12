@@ -14,6 +14,8 @@ class ArticlePaginator(pagination.PageNumberPagination):
     """
     Returns a paginated list of articles
     """
+    page_size = DEFAULT_PAGE_SIZE
+    page_size_query_param = 'page_size'
 
     def get_paginated_response(self, data):
         assert self is not None
@@ -37,14 +39,14 @@ class PaginationHandlerMixin():
     def paginator(self):
         if not hasattr(self, '_paginator'):
             if self.pagination_class is None:
-                self.paginator = None
+                self._paginator = None
             else:
-                self.paginator = self.pagination_class()
+                self._paginator = self.pagination_class()
         else:
             pass
         return self._paginator
 
-    def paginate_querytset(self, queryset):
+    def paginate_queryset(self, queryset):
         if self.paginator is None:
             return None
         return self.paginator.paginate_queryset(queryset, self.request, view=self)
