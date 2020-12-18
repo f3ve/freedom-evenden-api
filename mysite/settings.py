@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import django_heroku
+import dj_database_url
 
 load_dotenv()
 
@@ -29,7 +30,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://localhost:3000', '0.0.0.0:3000', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
@@ -98,6 +99,9 @@ DATABASES = {
         "PORT": "",
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASED['default'].update(db_from_env)
 
 
 # Password validation
