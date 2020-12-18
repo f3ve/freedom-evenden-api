@@ -124,6 +124,7 @@ class Article(models.Model):
     draft = models.BooleanField(default=True)
     publish_date = models.DateField(auto_now=False, auto_now_add=False)
     summary = models.CharField(max_length=280)
+    keywords = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
