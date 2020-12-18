@@ -62,7 +62,8 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://freedom-evenden-mzqz5jwca.vercel.app'
 ]
 
 ROOT_URLCONF = "mysite.urls"
