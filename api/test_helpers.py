@@ -103,5 +103,6 @@ def test_article1(user_id):
         "slug": "test_article_1_slug",
         "draft": False,
         "publish_date": datetime.date.today(),
-        "author": int(user_id)
+        "author": int(user_id),
+        "summary": "this is an article summary"
     }

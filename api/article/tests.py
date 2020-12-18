@@ -47,7 +47,7 @@ class ArticleListTestCase(APITestCase):
         serializer3 = test_helpers.serializerArticle(article3).data
 
         response = self.client.get(self.url)
-        data = response.json()
+        data = response.json()['results']
         if response.status_code is not status.HTTP_200_OK:
             print(data)
 
@@ -73,13 +73,13 @@ class ArticleDetailTest(APITestCase):
 
     def test_get_article_by_id(self):
         """
-        Should return 200 and requested user
+        Should return 200 and requested article
         """
 
         user = test_helpers.create_test_user(0)
         article = test_helpers.create_test_article(0, user, False)
-        url = reverse("article", args=[article.id])
-        response = self.client.get(url, pk=article.id)
+        url = reverse("article", args=[article.slug])
+        response = self.client.get(url, pk=article.slug)
         res_json = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -89,14 +89,14 @@ class ArticleDetailTest(APITestCase):
 
     def test_delete_article(self):
         """
-        Should return 204 and delete the request user
+        Should return 204 and delete the requested article
         """
 
         user = test_helpers.create_test_user(1)
         article = test_helpers.create_test_article(1, user, False)
-        url = reverse("article", args=[article.id])
-        response = self.client.delete(url, pk=article.id)
-        get_res = self.client.get(url, pk=article.id)
+        url = reverse("article", args=[article.slug])
+        response = self.client.delete(url, pk=article.slug)
+        get_res = self.client.get(url, pk=article.slug)
         res_json = get_res.json()
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -105,16 +105,16 @@ class ArticleDetailTest(APITestCase):
 
     def test_patch_article(self):
         """
-        Should return 203 and update specified user
+        Should return 203 and update specified article
         """
 
         user = test_helpers.create_test_user(2)
         article = test_helpers.create_test_article(2, user, False)
-        url = reverse("article", args=[article.id])
+        url = reverse("article", args=[article.slug])
         update_fields = {
             "title": "new title yay!"
         }
-        response = self.client.patch(url, pk=user.id, data=update_fields)
+        response = self.client.patch(url, pk=article.slug, data=update_fields)
         res_json = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)

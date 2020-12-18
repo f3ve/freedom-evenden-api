@@ -35,7 +35,6 @@ class ArticlesView(APIView, PaginationHandlerMixin):
         articles = Article.objects.filter(
             draft=False, publish_date__lte=today).order_by('-publish_date')
         page = self.paginate_queryset(articles)
-        print(page)
         if page is not None:
             serializer = serializers.ArticleSerializer(page, many=True)
             paginated_response = self.get_paginated_response(serializer.data)
