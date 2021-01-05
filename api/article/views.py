@@ -29,7 +29,7 @@ class ArticlesView(APIView, PaginationHandlerMixin):
 
     def get(self, request):
         """
-        returns a list of published articles ordered from most recent to oldest
+        returns a list of published articles ordered from most recent to oldest, optionally filter by category.
         """
         today = datetime.date.today()
         category = request.query_params.get('category', None)
