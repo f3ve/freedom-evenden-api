@@ -32,15 +32,21 @@ class ArticlesView(APIView, PaginationHandlerMixin):
         returns a list of published articles ordered from most recent to oldest
         """
         today = datetime.date.today()
-        articles = Article.objects.filter(
-            draft=False, publish_date__lte=today).order_by('-publish_date')
+        category = request.query_params.get('category', None)
+        if category is not None:
+            articles = Article.objects.filter(
+                draft=False, publish_date__lte=today, category=category).order_by('-publish_date')
+        else:
+            articles = Article.objects.filter(
+                draft=False, publish_date__lte=today).order_by('-publish_date')
         page = self.paginate_queryset(articles)
+
         if page is not None:
             serializer = serializers.ArticleSerializer(page, many=True)
             paginated_response = self.get_paginated_response(serializer.data)
             return Response(paginated_response.data)
-        else:
-            serializer = serializers.ArticleSerializer(articles, many=True)
+
+        serializer = serializers.ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
 
